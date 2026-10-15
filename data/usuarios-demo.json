@@ -1,9 +1,9 @@
 [
   {
     "id": "USR-0001",
-    "nombre": "Maria Fernanda Torres",
+    "nombre": "María Fernanda Torres",
     "rol": "Administrador",
-    "departamento": "Administracion",
+    "departamento": "Administración",
     "permisos": [
       "gestionar_usuarios",
       "ver_estadisticas",
@@ -14,8 +14,8 @@
   {
     "id": "USR-0002",
     "nombre": "Carlos Eduardo Rivas",
-    "rol": "Personal juridico autorizado",
-    "departamento": "Asesoria juridica",
+    "rol": "Personal jurídico autorizado",
+    "departamento": "Asesoría jurídica",
     "permisos": [
       "ver_juridico",
       "registrar_referencias",
@@ -24,7 +24,7 @@
   },
   {
     "id": "USR-0003",
-    "nombre": "Ana Lucia Paredes",
+    "nombre": "Ana Lucía Paredes",
     "rol": "Personal socioeducativo",
     "departamento": "Talleres",
     "permisos": [
@@ -35,9 +35,9 @@
   },
   {
     "id": "USR-0004",
-    "nombre": "Jorge Andres Villacis",
+    "nombre": "Jorge Andrés Villacís",
     "rol": "Personal administrativo",
-    "departamento": "Secretaria",
+    "departamento": "Secretaría",
     "permisos": [
       "gestionar_registros",
       "registrar_movimientos"
@@ -47,7 +47,7 @@
     "id": "USR-0005",
     "nombre": "Daniela Carolina Mena",
     "rol": "Personal socioeducativo",
-    "departamento": "Orientacion",
+    "departamento": "Orientación",
     "permisos": [
       "registrar_seguimiento",
       "consultar_datos_funcion"
