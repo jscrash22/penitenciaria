@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'penitenciaria_data_v1';
+const STORAGE_KEY = 'penitenciaria_data_v2';
 
 let estado = null;
 let usuarioActualId = null;
