@@ -1,11 +1,98 @@
 [
-  { "codigo": "ACT-0001", "nombre": "Taller de convivencia", "categoria": "Talleres formativos", "fecha": "2024-06-10", "horaInicio": "09:00", "horaFin": "11:00", "responsable": "Ana Lucia Paredes", "descripcion": "Actividad grupal de convivencia", "capacidad": 15, "estado": "Programada" },
-  { "codigo": "ACT-0002", "nombre": "Curso de computacion basica", "categoria": "Educativo", "fecha": "2024-06-12", "horaInicio": "14:00", "horaFin": "16:00", "responsable": "Daniela Carolina Mena", "descripcion": "Introduccion a computacion", "capacidad": 12, "estado": "Programada" },
-  { "codigo": "ACT-0003", "nombre": "Taller de musica", "categoria": "Actividades culturales", "fecha": "2024-06-05", "horaInicio": "10:00", "horaFin": "12:00", "responsable": "Ana Lucia Paredes", "descripcion": "Expresion musical", "capacidad": 20, "estado": "Realizada" },
-  { "codigo": "ACT-0004", "nombre": "Entrenamiento deportivo", "categoria": "Talleres formativos", "fecha": "2024-06-08", "horaInicio": "15:00", "horaFin": "17:00", "responsable": "Carlos Eduardo Rivas", "descripcion": "Actividad fisica", "capacidad": 25, "estado": "Realizada" },
-  { "codigo": "ACT-0005", "nombre": "Charla de orientacion vocacional", "categoria": "Orientacion vocacional", "fecha": "2024-06-15", "horaInicio": "10:30", "horaFin": "12:30", "responsable": "Daniela Carolina Mena", "descripcion": "Orientacion a intereses", "capacidad": 30, "estado": "Programada" },
-  { "codigo": "ACT-0006", "nombre": "Taller de arte", "categoria": "Actividades culturales", "fecha": "2024-06-03", "horaInicio": "09:00", "horaFin": "11:00", "responsable": "Ana Lucia Paredes", "descripcion": "Manualidades", "capacidad": 15, "estado": "Cancelada" },
-  { "codigo": "ACT-0007", "nombre": "Sesion de seguimiento administrativo", "categoria": "Revision administrativa", "fecha": "2024-06-18", "horaInicio": "08:30", "horaFin": "10:00", "responsable": "Maria Fernanda Torres", "descripcion": "Revision de expedientes", "capacidad": 10, "estado": "Programada" },
-  { "codigo": "ACT-0008", "nombre": "Taller de carpinteria", "categoria": "Talleres formativos", "fecha": "2024-06-20", "horaInicio": "13:00", "horaFin": "15:30", "responsable": "Carlos Eduardo Rivas", "descripcion": "Formacion ocupacional", "capacidad": 8, "estado": "Programada" }
+  {
+    "codigo": "ACT-0001",
+    "nombre": "Taller de convivencia",
+    "categoria": "Talleres formativos",
+    "fecha": "2024-06-10",
+    "horaInicio": "09:00",
+    "horaFin": "11:00",
+    "responsable": "Ana Lucia Paredes",
+    "descripcion": "Actividad grupal de convivencia",
+    "capacidad": 15,
+    "estado": "Programada"
+  },
+  {
+    "codigo": "ACT-0002",
+    "nombre": "Curso de computacion basica",
+    "categoria": "Educativo",
+    "fecha": "2024-06-12",
+    "horaInicio": "14:00",
+    "horaFin": "16:00",
+    "responsable": "Daniela Carolina Mena",
+    "descripcion": "Introduccion a computacion",
+    "capacidad": 12,
+    "estado": "Programada"
+  },
+  {
+    "codigo": "ACT-0003",
+    "nombre": "Taller de musica",
+    "categoria": "Actividades culturales",
+    "fecha": "2024-06-05",
+    "horaInicio": "10:00",
+    "horaFin": "12:00",
+    "responsable": "Ana Lucia Paredes",
+    "descripcion": "Expresion musical",
+    "capacidad": 20,
+    "estado": "Realizada"
+  },
+  {
+    "codigo": "ACT-0004",
+    "nombre": "Entrenamiento deportivo",
+    "categoria": "Talleres formativos",
+    "fecha": "2024-06-08",
+    "horaInicio": "15:00",
+    "horaFin": "17:00",
+    "responsable": "Carlos Eduardo Rivas",
+    "descripcion": "Actividad fisica",
+    "capacidad": 25,
+    "estado": "Realizada"
+  },
+  {
+    "codigo": "ACT-0005",
+    "nombre": "Charla de orientacion vocacional",
+    "categoria": "Orientacion vocacional",
+    "fecha": "2024-06-15",
+    "horaInicio": "10:30",
+    "horaFin": "12:30",
+    "responsable": "Daniela Carolina Mena",
+    "descripcion": "Orientacion a intereses",
+    "capacidad": 30,
+    "estado": "Programada"
+  },
+  {
+    "codigo": "ACT-0006",
+    "nombre": "Taller de arte",
+    "categoria": "Actividades culturales",
+    "fecha": "2024-06-03",
+    "horaInicio": "09:00",
+    "horaFin": "11:00",
+    "responsable": "Ana Lucia Paredes",
+    "descripcion": "Manualidades",
+    "capacidad": 15,
+    "estado": "Cancelada"
+  },
+  {
+    "codigo": "ACT-0007",
+    "nombre": "Sesion de seguimiento administrativo",
+    "categoria": "Revision administrativa",
+    "fecha": "2024-06-18",
+    "horaInicio": "08:30",
+    "horaFin": "10:00",
+    "responsable": "Maria Fernanda Torres",
+    "descripcion": "Revision de expedientes",
+    "capacidad": 10,
+    "estado": "Programada"
+  },
+  {
+    "codigo": "ACT-0008",
+    "nombre": "Taller de carpinteria",
+    "categoria": "Talleres formativos",
+    "fecha": "2024-06-20",
+    "horaInicio": "13:00",
+    "horaFin": "15:30",
+    "responsable": "Carlos Eduardo Rivas",
+    "descripcion": "Formacion ocupacional",
+    "capacidad": 8,
+    "estado": "Programada"
+  }
 ]
-
