@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Gestión de Centro de Adolescentes (Demo)</title>
+  <meta name="description" content="Prototipo administrativo de demostración con datos ficticios para gestión de expedientes juveniles." />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1F3864" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <header class="header">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menú">☰</button>
+      <div class="title" id="page-title">Panel principal</div>
+      <div class="search-box">
+        <span class="icon">🔍</span>
+        <input type="text" id="global-search-input" placeholder="Buscar código, nombre, estado..." aria-label="Búsqueda global" />
+        <div class="search-results" id="global-search-results" style="display:none;"></div>
+      </div>
+      <div class="user-menu">
+        <select id="header-user-select" aria-label="Usuario de demostración"></select>
+        <span class="status-pill" id="status-pill">En línea</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Dashboard -->
+      <section class="page" id="page-dashboard">
+        <h1 class="page-title">Panel principal</h1>
+        <p class="page-subtitle">Indicadores calculados dinámicamente a partir de los registros de demostración.</p>
+        <div id="dash-indicadores" class="cards-grid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="section-block">
+            <div class="section-header"><h3>Ingresos recientes</h3><button class="btn small primary" onclick="mostrarSeccion('expedientes')">Ver expedientes</button></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Código</th><th>Nombre ficticio</th><th>Fecha de ingreso</th><th>Estado</th><th>Situación</th></tr></thead>
+                <tbody id="dash-ingresos"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="section-block">
+            <div class="section-header"><h3>Próximas actividades</h3><button class="btn small primary" onclick="mostrarSeccion('actividades')">Ver actividades</button></div>
+            <div id="dash-actividades"></div>
+          </div>
+        </div>
+        <div class="section-block" style="margin-top:12px;">
+          <div class="section-header"><h3>Accesos rápidos</h3></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn primary" onclick="Expedientes.abrirCrear()">Registrar nuevo expediente</button>
+            <button class="btn" onclick="mostrarSeccion('expedientes')">Consultar expedientes</button>
+            <button class="btn" onclick="Actividades.crear()">Programar actividad</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Expedientes -->
+      <section class="page" id="page-expedientes">
+        <h1 class="page-title">Expedientes individuales</h1>
+        <p class="page-subtitle">Búsqueda, filtros, ordenamiento y paginación sobre registros ficticios.</p>
+        <div class="filters-bar">
+          <input type="text" id="exp-buscar" placeholder="Buscar por código, nombre o estado..." />
+          <input type="number" id="exp-edad-min" placeholder="Edad mín." style="width:90px" />
+          <input type="number" id="exp-edad-max" placeholder="Edad máx." style="width:90px" />
+          <select id="exp-situacion"><option value="">Situación (todas)</option><option>Bajo custodia</option><option>Libertad asistida</option><option>Egreso</option></select>
+          <select id="exp-estado"><option value="">Estado (todos)</option><option>Activo</option><option>Archivado</option><option>En revisión</option></select>
+          <input type="date" id="exp-fecha-desde" title="Ingreso desde" />
+          <input type="date" id="exp-fecha-hasta" title="Ingreso hasta" />
+          <button class="btn" onclick="Expedientes.limpiarFiltros()">Limpiar filtros</button>
+          <button class="btn primary" onclick="Expedientes.abrirCrear()">Nuevo expediente</button>
+        </div>
+        <div class="section-block">
+          <div class="table-wrap">
+            <table id="tbl-expedientes">
+              <thead>
+                <tr>
+                  <th data-sort="codigo">Código <span class="sort-indicator"></span></th>
+                  <th data-sort="nombreFicticio">Nombre <span class="sort-indicator"></span></th>
+                  <th data-sort="edad">Edad <span class="sort-indicator"></span></th>
+                  <th data-sort="fechaIngreso">Fecha de ingreso <span class="sort-indicator"></span></th>
+                  <th data-sort="estado">Estado <span class="sort-indicator"></span></th>
+                  <th data-sort="situacionActual">Situación <span class="sort-indicator"></span></th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbl-expedientes-body"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div id="exp-paginacion"></div>
+            <span class="info" id="exp-pag-info"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Movimientos -->
+      <section class="page" id="page-movimientos">
+        <h1 class="page-title">Ingresos, egresos y movimientos</h1>
+        <p class="page-subtitle">Los movimientos definitivos no se eliminan; la anulación conserva el registro original.</p>
+        <div class="filters-bar">
+          <input type="text" id="mov-buscar" placeholder="Buscar código, expediente o referencia..." />
+          <select id="mov-filtro-tipo"><option value="">Tipo (todos)</option><option>Ingreso</option><option>Egreso</option><option>Traslado interno</option></select>
+          <select id="mov-filtro-estado"><option value="">Validación (todas)</option><option>Validado</option><option>Pendiente</option><option>Anulado</option></select>
+          <button class="btn primary" onclick="abrirCrearMovimiento()">Registrar movimiento</button>
+        </div>
+        <div class="section-block">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Expediente</th><th>Tipo</th><th>Fecha y hora</th><th>Referencia</th><th>Motivo</th><th>Usuario</th><th>Validación</th><th>Acciones</th></tr></thead>
+              <tbody id="tbl-movimientos-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seguimiento -->
+      <section class="page" id="page-seguimiento">
+        <h1 class="page-title">Seguimiento socioeducativo</h1>
+        <p class="page-subtitle">Actividades de seguimiento vinculadas a expedientes ficticios (sin diagnósticos clínicos).</p>
+        <div class="filters-bar">
+          <input type="text" id="seg-buscar" placeholder="Buscar código, expediente o nombre..." />
+          <input type="date" id="seg-filtro-fecha" title="Fecha" />
+          <select id="seg-filtro-tipo"><option value="">Tipo (todos)</option><option>Educativo</option><option>Orientación vocacional</option><option>Talleres formativos</option><option>Reinserción social</option><option>Actividades culturales</option><option>Orientación familiar</option><option>Revisión administrativa</option></select>
+          <select id="seg-filtro-estado"><option value="">Estado (todos)</option><option>Pendiente</option><option>Completado</option></select>
+          <button class="btn" onclick="Seguimiento.limpiar()">Limpiar</button>
+          <button class="btn primary" onclick="Seguimiento.abrirCrear()">Nuevo seguimiento</button>
+        </div>
+        <div class="section-block">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Expediente</th><th>Adolescente</th><th>Tipo</th><th>Fecha</th><th>Objetivo</th><th>Estado</th><th>Próxima revisión</th></tr></thead>
+              <tbody id="tbl-seguimiento-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actividades -->
+      <section class="page" id="page-actividades">
+        <h1 class="page-title">Actividades y calendario</h1>
+        <p class="page-subtitle">Vista de lista y calendario. Valida que la hora de finalización sea posterior.</p>
+        <div class="filters-bar">
+          <button class="btn act-view-btn active" data-view="lista" onclick="Actividades.cambiarVista('lista')">Lista</button>
+          <button class="btn act-view-btn" data-view="calendario" onclick="Actividades.cambiarVista('calendario')">Calendario</button>
+          <button class="btn primary" onclick="Actividades.crear()">Nueva actividad</button>
+        </div>
+        <div id="act-contenido"></div>
+      </section>
+
+      <!-- Usuarios -->
+      <section class="page" id="page-usuarios">
+        <h1 class="page-title">Usuarios y roles de demostración</h1>
+        <p class="page-subtitle">Simulación visual sin backend. Sin contraseñas reales.</p>
+        <div class="filters-bar">
+          <label for="usuario-actual-select">Usuario actual de demostración:</label>
+          <select id="usuario-actual-select" onchange="cambiarUsuarioActual(this.value)"></select>
+        </div>
+        <div id="usuarios-contenido"></div>
+      </section>
+
+      <!-- Informes -->
+      <section class="page" id="page-informes">
+        <h1 class="page-title">Informes y estadísticas</h1>
+        <p class="page-subtitle">Agregados, sin nombres ni información jurídica individual.</p>
+        <div class="filters-bar">
+          <label>Desde</label><input type="date" id="rep-desde" />
+          <label>Hasta</label><input type="date" id="rep-hasta" />
+        </div>
+        <div id="informes-contenido"></div>
+      </section>
+
+      <!-- Configuración -->
+      <section class="page" id="page-configuracion">
+        <h1 class="page-title">Configuración y gestión de datos</h1>
+        <p class="page-subtitle">Restauración, importación/exportación y validación de datos ficticios.</p>
+        <div id="config-contenido"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal detalle expediente -->
+  <div class="modal-backdrop" id="modal-detalle">
+    <div class="modal wide">
+      <div class="modal-header">
+        <h2 id="det-nombre">Expediente</h2>
+        <div style="display:flex;gap:8px;">
+          <button class="btn small primary" id="det-editar-btn">Editar</button>
+          <button class="close-btn" data-close="modal-detalle">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:8px;font-weight:600;" id="det-codigo"></div>
+        <div class="tabs">
+          <button class="tab active" data-tab="general" onclick="mostrarTabDetalle('general')">A. General</button>
+          <button class="tab" data-tab="juridico" onclick="mostrarTabDetalle('juridico')">B. Situación jurídica</button>
+          <button class="tab" data-tab="movimientos" onclick="mostrarTabDetalle('movimientos')">C. Ingresos/Egresos</button>
+          <button class="tab" data-tab="seguimiento" onclick="mostrarTabDetalle('seguimiento')">D. Seguimiento socioeducativo</button>
+          <button class="tab" data-tab="incidentes" onclick="mostrarTabDetalle('incidentes')">E. Incidentes</button>
+          <button class="tab" data-tab="documentos" onclick="mostrarTabDetalle('documentos')">F. Documentación</button>
+          <button class="tab" data-tab="historial" onclick="mostrarTabDetalle('historial')">G. Historial de modificaciones</button>
+        </div>
+        <div class="tab-panel active" id="panel-general"></div>
+        <div class="tab-panel" id="panel-juridico"></div>
+        <div class="tab-panel" id="panel-movimientos"></div>
+        <div class="tab-panel" id="panel-seguimiento"></div>
+        <div class="tab-panel" id="panel-incidentes"></div>
+        <div class="tab-panel" id="panel-documentos"></div>
+        <div class="tab-panel" id="panel-historial"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal expediente crear/editar -->
+  <div class="modal-backdrop" id="modal-expediente">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-expediente-titulo">Expediente</h2>
+        <button class="close-btn" data-close="modal-expediente">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="exp-form-modo" />
+        <div class="form-grid">
+          <div class="form-group"><label for="exp-form-codigo">Código interno *</label><input id="exp-form-codigo" placeholder="EXP-0013" /><div class="form-error" data-err="exp-form-codigo"></div></div>
+          <div class="form-group"><label for="exp-form-nombre">Nombre ficticio *</label><input id="exp-form-nombre" /><div class="form-error" data-err="exp-form-nombre"></div></div>
+          <div class="form-group"><label for="exp-form-nacimiento">Fecha de nacimiento *</label><input type="date" id="exp-form-nacimiento" /><div class="form-error" data-err="exp-form-nacimiento"></div></div>
+          <div class="form-group"><label for="exp-form-sexo">Sexo</label><select id="exp-form-sexo"><option>Masculino</option><option>Femenino</option><option>No especifica (demo)</option></select></div>
+          <div class="form-group"><label for="exp-form-ingreso">Fecha de ingreso *</label><input type="datetime-local" id="exp-form-ingreso" /><div class="form-error" data-err="exp-form-ingreso"></div></div>
+          <div class="form-group"><label for="exp-form-estado">Estado del expediente</label><select id="exp-form-estado"><option>Activo</option><option>Archivado</option><option>En revisión</option></select></div>
+          <div class="form-group"><label for="exp-form-situacion">Situación actual</label><select id="exp-form-situacion"><option>Bajo custodia</option><option>Libertad asistida</option><option>Egreso</option></select></div>
+          <div class="form-group"><label for="exp-form-centro">Centro / unidad *</label><input id="exp-form-centro" /><div class="form-error" data-err="exp-form-centro"></div></div>
+          <div class="form-group"><label for="exp-form-responsable">Responsable *</label><input id="exp-form-responsable" /><div class="form-error" data-err="exp-form-responsable"></div></div>
+          <div class="form-group"><label for="exp-form-ref">Código ref. judicial (ficticio)</label><input id="exp-form-ref" /></div>
+          <div class="form-group"><label for="exp-form-autoridad">Autoridad judicial (ejemplo)</label><input id="exp-form-autoridad" /></div>
+          <div class="form-group"><label for="exp-form-clasif">Clasificación general</label><input id="exp-form-clasif" /></div>
+          <div class="form-group"><label for="exp-form-medida">Medida socioeducativa</label><input id="exp-form-medida" /></div>
+          <div class="form-group"><label for="exp-form-proxima">Próxima revisión</label><input type="date" id="exp-form-proxima" /></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-close="modal-expediente">Cancelar</button>
+        <button class="btn primary" onclick="Expedientes.guardar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal seguimiento -->
+  <div class="modal-backdrop" id="modal-seguimiento">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Registrar seguimiento</h2>
+        <button class="close-btn" data-close="modal-seguimiento">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Código *</label><input id="seg-form-codigo" /></div>
+          <div class="form-group"><label>Expediente asociado *</label><select id="seg-form-expediente"></select></div>
+          <div class="form-group"><label>Tipo</label><select id="seg-form-tipo"><option>Educativo</option><option>Orientación vocacional</option><option>Talleres formativos</option><option>Reinserción social</option><option>Actividades culturales</option><option>Orientación familiar</option><option>Revisión administrativa</option></select></div>
+          <div class="form-group"><label>Fecha *</label><input type="date" id="seg-form-fecha" /></div>
+          <div class="form-group full"><label>Objetivo</label><input id="seg-form-objetivo" /></div>
+          <div class="form-group full"><label>Descripción de la actividad</label><textarea id="seg-form-descripcion"></textarea></div>
+          <div class="form-group full"><label>Resultado u observación</label><textarea id="seg-form-resultado"></textarea></div>
+          <div class="form-group"><label>Próxima revisión</label><input type="date" id="seg-form-proxima" /></div>
+          <div class="form-group"><label>Estado</label><select id="seg-form-estado"><option>Pendiente</option><option>Completado</option></select></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-close="modal-seguimiento">Cancelar</button>
+        <button class="btn primary" onclick="Seguimiento.guardar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal actividad -->
+  <div class="modal-backdrop" id="modal-actividad">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-actividad-titulo">Actividad</h2>
+        <button class="close-btn" data-close="modal-actividad">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="act-form-modo" />
+        <div class="form-grid">
+          <div class="form-group"><label>Código *</label><input id="act-form-codigo" /></div>
+          <div class="form-group"><label>Nombre *</label><input id="act-form-nombre" /></div>
+          <div class="form-group"><label>Categoría</label><select id="act-form-categoria"><option>Educativo</option><option>Orientación vocacional</option><option>Talleres formativos</option><option>Actividades culturales</option><option>Orientación familiar</option><option>Reinserción social</option><option>Revisión administrativa</option></select></div>
+          <div class="form-group"><label>Fecha *</label><input type="date" id="act-form-fecha" /></div>
+          <div class="form-group"><label>Hora inicio *</label><input type="time" id="act-form-inicio" /></div>
+          <div class="form-group"><label>Hora fin *</label><input type="time" id="act-form-fin" /></div>
+          <div class="form-group"><label>Responsable</label><input id="act-form-responsable" /></div>
+          <div class="form-group"><label>Capacidad prevista</label><input type="number" id="act-form-capacidad" /></div>
+          <div class="form-group"><label>Estado</label><select id="act-form-estado"><option>Programada</option><option>Realizada</option><option>Cancelada</option></select></div>
+          <div class="form-group full"><label>Descripción</label><textarea id="act-form-descripcion"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-close="modal-actividad">Cancelar</button>
+        <button class="btn primary" onclick="Actividades.guardar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal movimiento -->
+  <div class="modal-backdrop" id="modal-movimiento">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Registrar movimiento</h2>
+        <button class="close-btn" data-close="modal-movimiento">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Código *</label><input id="mov-form-codigo" /></div>
+          <div class="form-group"><label>Expediente *</label><select id="mov-form-expediente"></select></div>
+          <div class="form-group"><label>Tipo *</label><select id="mov-form-tipo"><option>Ingreso</option><option>Egreso</option><option>Traslado interno</option></select></div>
+          <div class="form-group"><label>Fecha y hora *</label><input type="datetime-local" id="mov-form-fecha" /></div>
+          <div class="form-group"><label>Referencia administrativa</label><input id="mov-form-referencia" /></div>
+          <div class="form-group"><label>Estado de validación</label><select id="mov-form-estado"><option>Pendiente</option><option>Validado</option></select></div>
+          <div class="form-group full"><label>Motivo</label><input id="mov-form-motivo" /></div>
+          <div class="form-group full"><label>Observaciones</label><textarea id="mov-form-observaciones"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-close="modal-movimiento">Cancelar</button>
+        <button class="btn primary" onclick="guardarMovimiento()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/seed-data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/expedientes.js"></script>
+  <script src="js/seguimiento.js"></script>
+  <script src="js/actividades.js"></script>
+  <script src="js/usuarios.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Service Worker / PWA -->
+  <script>
+    function mostrarTabDetalle(tab){
+      document.querySelectorAll('#modal-detalle .tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-tab')===tab); });
+      document.querySelectorAll('#modal-detalle .tab-panel').forEach(function(p){ p.classList.toggle('active', p.id === 'panel-'+tab); });
+    }
+    window.mostrarTabDetalle = mostrarTabDetalle;
+    window.cambiarUsuarioActual = function(id){ 
+      if(window.Storage){ window.Storage.establecerUsuarioActual(id); }
+      if(window.Usuarios && Usuarios.render) Usuarios.render();
+      if(window.Dashboard && Dashboard.render) Dashboard.render();
+    };
+  </script>
+</body>
+</html>

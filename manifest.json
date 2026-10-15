@@ -1,0 +1,13 @@
+{
+  "name": "Sistema de Gestión de Centro de Adolescentes (Demo)",
+  "short_name": "Penitenciaria Demo",
+  "description": "Prototipo administrativo de demostración con datos ficticios.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F4F6F9",
+  "theme_color": "#1F3864",
+  "icons": [
+    { "src": "assets/icons/icon.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icons/icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
